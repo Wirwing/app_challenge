@@ -4,6 +4,7 @@
 
 insert into plan values(1, 'matematicas' );
 insert into alumno values(1, '10216287', '' );
+insert into alumno values(2, '04002800', '' );
 
 
 insert into asignatura values(1, 'ALGEBRA SUPERIOR I', 10 );

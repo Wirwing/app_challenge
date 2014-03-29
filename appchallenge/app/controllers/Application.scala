@@ -9,8 +9,20 @@ object Application extends Controller {
 
   def index = Action {
 
-    val month = LocalDateTime.now.month
-    Logger.debug(month.get.toString)
+    // val month = LocalDateTime.now.month
+    // Logger.debug(month.get.toString)
+
+     // val formatter = DateTimeFormat.forPattern("HH:mm");
+     // val start = new LocalTime(formatter.parseDateTime("10:00"))
+     // val end = new LocalTime(formatter.parseDateTime("12:00"))
+
+     // val between = new LocalTime(formatter.parseDateTime("10:00"))
+
+     // val interval = new LocalTimeInterval(start, end);
+
+     // val result = interval.contains(between)
+
+     // Logger.debug(result.toString)
 
     Ok(views.html.index("Your new application is ready."))
   }
