@@ -55,7 +55,7 @@ object Kardex {
     }
   }
 
-  def isAproved( alumnoId: Int, asignaturaId:List[Dependencia] ){
+  def isAproved( alumnoId: Int, asignaturaId:List[Dependencia] ):Boolean = {
     val aprovedDependencies = DB.withConnection { implicit connection =>
       SQL("select * from kardex where alumnoId = {alumnoId} and asignaturaId = {asignaturaId} and situacion = 1").on(
         'alumnoId -> alumnoId,

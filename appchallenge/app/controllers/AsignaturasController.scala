@@ -20,6 +20,8 @@ object AsignaturasController extends Controller{
 			val dependencies = Dependencia.findById( asignaturaId )
 			val isAproved = Kardex.isAproved( alumnoId, dependencies )
 
+			Logger.info( "is aproved = "+isAproved )
+
 		Ok( "isAproved = "+isAproved )
 
 	}
