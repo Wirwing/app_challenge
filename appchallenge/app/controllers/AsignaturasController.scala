@@ -108,11 +108,16 @@ object AsignaturasController extends Controller{
 		 	val cam = Kardex.calculateCAM( studentId )
 		 	Logger.info( cam.toString )
 
-		 	val failedSubjects = Kardex.getAllNotAproved( studentId ).groupBy( x => x.asignaturaId.get.toInt )
-		 	Logger.info( failedSubjects.size.toString )
 
-		 	if( failedSubjects.keySet.size <= cam ){
-		 		failedSubjects.keySet.foreach( x => {
+
+		 	val failedSubjects = Kardex.getAllNotAproved( studentId )
+		 	val failedSubjectsMap = failedSubjects.groupBy( x => x.asignaturaId.get.toInt )
+
+		 	val keysFailedSubjects = failedSubjects.map( x => x.asignaturaId.get.toInt ).distinct
+
+
+		 	if( keysFailedSubjects.size <= cam ){
+		 		keysFailedSubjects.foreach( x => {
 		 				val asignatura = Asignatura.findById(x).get
 		 				suggest = suggest:+asignatura
 		 			} )
@@ -123,7 +128,11 @@ object AsignaturasController extends Controller{
 		 		
 		 		for( i <- 0 to (cam-suggest.size-1) ){
 		 			suggest = suggest:+offerSubjects(i)
+		 			//texto += suggest(i).toString+" ,"
 		 		}
+
+
+		 		
 		 	}
 
 		 	

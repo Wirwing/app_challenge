@@ -108,7 +108,7 @@ case class IA( x: Int, y: Int ){
 
   def getAllAproved( studentId: Int ): List[Kardex] = {
    DB.withConnection { implicit connection =>
-    SQL("select * from kardex where alumnoId = {studentId} and situacion = '1'").on(
+    SQL("select * from kardex where alumnoId = {studentId} and situacion = '1' order by periodo desc").on(
       'studentId -> studentId        
       ).as( kardex *)
   }
@@ -121,12 +121,17 @@ def getAllNotAproved( studentId: Int ): List[Kardex] = {
       ).as( kardex *)
   }
 
+  Logger.info( failed.toString )
   val passed = getAllAproved( studentId ).map( x  => x.asignaturaId.get.toInt )
+  
   val failedIds = failed.map( x  => x.asignaturaId.get.toInt )
+  Logger.info( "failedIds = "+failedIds.toString )
 
   val allNeverAprovedIds = (failedIds filterNot passed.contains)
+  Logger.info( "allNeverAprovedIds = "+allNeverAprovedIds.toString )
 
   val allNeverAproved = failed.filter( x => allNeverAprovedIds.contains( x.asignaturaId.get.toInt ) )
+  Logger.info( "allNeverAproved = "+allNeverAproved.toString )
 
   return allNeverAproved
 }
@@ -162,11 +167,6 @@ def calculateCAM( studentId: Int ):Int = {
 
   val iaPerPeriod = calculateIAperGroup.map( x=> x.calculate )
   //Logger.info( "iaPerPeriod = "+iaPerPeriod.toString )
-
-
-  
-  
-
 
   
   val cam = iaPerPeriod.max
