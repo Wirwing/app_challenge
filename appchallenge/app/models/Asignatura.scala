@@ -26,8 +26,7 @@ object Asignatura {
   val asignatura = {
       get[Pk[Long]]("asignatura.id") ~
       get[String]("asignatura.name") ~
-      get[Int]("asignatura.credits") 
-      map {
+      get[Int]("asignatura.credits") map {
         case id ~ name ~ credits  => Asignatura(id, name, credits)
       }
   }

@@ -24,8 +24,7 @@ object Plan {
    */
   val plan = {
     get[Pk[Long]]("plan.id") ~
-      get[String]("plan.name") 
-      map {
+      get[String]("plan.name") map {
         case id ~ name  => Plan(id, name)
       }
   }
