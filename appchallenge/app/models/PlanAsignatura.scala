@@ -24,16 +24,16 @@ object PlanAsignatura {
    * Parse an Event from a ResultSet
    */
   val planAsignatura = {
-    get[Pk[Long]]("plan.idAsignatura") ~
-    get[Pk[Long]]("plan.idPlan")  map {
-        case idAsignatura ~ idPlan   => Plan(idAsignatura, idPlan)
+    get[Pk[Long]]("planAsignatura.idAsignatura") ~
+    get[Pk[Long]]("planAsignatura.idPlan")  map {
+        case idAsignatura ~ idPlan   => PlanAsignatura(idAsignatura, idPlan)
     }
   }
 
   /**
   * Retrieve all Alumnos.
   */
-  def all(): List[Plan] = DB.withConnection {
+  def all(): List[PlanAsignatura] = DB.withConnection {
     implicit c => SQL("select * from planasignatura").as(planAsignatura *)
   }
 
@@ -41,9 +41,14 @@ object PlanAsignatura {
   * Retrieve a event from the id.
   * @param id the event id
   */
-  def findById(id: Long): Option[PlanAsignatura] = {
+  def findById(idAsignatura: Int, idPlan: Int): Option[PlanAsignatura] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from planasignatura where id = {id}").on('id -> id).as(PlanAsignatura.planAsignatura.singleOpt)
+      SQL("""select * from planasignatura where idAsignatura = {id}
+            and idPlan = {idPlan}    
+          """).on(
+          'idPlan -> idPlan,
+          'idAsignatura -> idAsignatura
+          ).as(PlanAsignatura.planAsignatura.singleOpt)
     }
   }
 
