@@ -55,7 +55,11 @@ object Kardex {
     }
   }
 
-  def isAproved( alumnoId: Int, asignaturaId:List[Dependencia] ):Boolean = {
+  /**
+  *possible deprecated
+  */
+
+  def isAproved( alumnoId: Int, asignaturaId:Int ):Boolean = {
     val aprovedDependencies = DB.withConnection { implicit connection =>
       SQL("select * from kardex where alumnoId = {alumnoId} and asignaturaId = {asignaturaId} and situacion = 1").on(
         'alumnoId -> alumnoId,
@@ -69,7 +73,7 @@ object Kardex {
 
   def getAllAproved( studentId: Int ): List[Kardex] = {
      DB.withConnection { implicit connection =>
-      SQL("select * from kardex where alumnoId = {studentId} and situacion = 1").on(
+      SQL("select * from kardex where alumnoId = {studentId} and situacion = '1'").on(
         'studentId -> studentId        
         ).as( kardex *)
     }
