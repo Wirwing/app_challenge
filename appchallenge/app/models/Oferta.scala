@@ -46,11 +46,21 @@ object Oferta {
     implicit c => SQL("select * from oferta").as(oferta *)
   }
 
+  def allInLapse( lapse  :String ): List[Oferta] = {
+     implicit c => SQL("select * from oferta where periodo = {lapse}").on( 'lapse -> lapse ).as(oferta *)
+  }
+
   /**
   * Retrieve a event from the id.
   * @param id the event id
   */
   def findById(id: Long): Option[Oferta] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from oferta where id = {id}").on('id -> id).as(Oferta.oferta.singleOpt)
+    }
+  }
+
+  def findByIdAnd(id: Long): Option[Oferta] = {
     DB.withConnection { implicit connection =>
       SQL("select * from oferta where id = {id}").on('id -> id).as(Oferta.oferta.singleOpt)
     }
