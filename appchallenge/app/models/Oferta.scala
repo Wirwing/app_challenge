@@ -46,7 +46,7 @@ object Oferta {
     implicit c => SQL("select * from oferta").as(oferta *)
   }
 
-  def allInLapse( lapse  :String ): List[Oferta] = {
+  def allInLapse( lapse  :String ): List[Oferta] = DB.withConnection {
      implicit c => SQL("select * from oferta where periodo = {lapse}").on( 'lapse -> lapse ).as(oferta *)
   }
 
