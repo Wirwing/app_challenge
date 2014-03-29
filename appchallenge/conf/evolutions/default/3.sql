@@ -1,3 +1,4 @@
+# --- !Ups
 
 insert into oferta values(7, 1, '2014-01-01', 1, "12:00", "13:20");
 insert into oferta values(7, 1, '2014-01-01', 3, "12:00", "13:20");
@@ -35,3 +36,6 @@ insert into oferta values(13, 2, '2014-01-01', 5, "15:00", "16:20");
 insert into oferta values(13, 3, '2014-01-01', 2, "12:00", "13:20");
 insert into oferta values(13, 3, '2014-01-01', 3, "12:00", "13:20");
 insert into oferta values(13, 3, '2014-01-01', 5, "12:00", "13:20");
+
+
+# --- !Downs

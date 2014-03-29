@@ -18,7 +18,4 @@ insert into kardex values( 1, 8, '2013-08-01', 1, 1 );
 insert into kardex values( 1, 9, '2013-08-01', 1, 1 );
 insert into kardex values( 1, 1, '2013-08-01', 0, 0 );
 
-
-
-
 # --- !Downs
