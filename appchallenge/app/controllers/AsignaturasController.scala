@@ -15,6 +15,15 @@ import play.api.Logger
 
 object AsignaturasController extends Controller{
 
+
+	def test( alumnoId:Int ) = Action{
+
+		Logger.info("not aproved list = "+Kardex.getAllNotAproved( alumnoId ).toString)
+
+
+		Ok("Done")
+	}
+
 	def checkSatisfiedDependencies( alumnoId: Int, asignaturaId: Int ) = Action{
 		implicit request =>
 			
@@ -45,8 +54,8 @@ object AsignaturasController extends Controller{
 		 	//val lapse = Date.month()
 		 	//val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
 
-		 	val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
-		 	Logger.info( "offerIds = "+Oferta.all().toString )
+		 	val offerIds = Oferta.allGroupByTeacher().map( x => x.idAsignatura.get.toInt )
+		 	Logger.info( "offerIds = "+offerIds )
 
 		 	val aprovedSubjectsIds = Kardex.getAllAproved( studentId ).map( x => x.asignaturaId.get.toInt )
 		 	Logger.info( "aprovedSubjectsIds = "+aprovedSubjectsIds.toString )
@@ -61,6 +70,63 @@ object AsignaturasController extends Controller{
 		 	Logger.info( suggestedSubjects.toString )
 
 		 	Ok( suggestedSubjects.toString )
+
+	}
+
+	def getAvailableSubjects( studentId:Int ):List[Asignatura] = {
+
+		val offerIds = Oferta.allGroupByTeacher().map( x => x.idAsignatura.get.toInt )
+		 	Logger.info( "offerIds = "+offerIds )
+
+		 	val aprovedSubjectsIds = Kardex.getAllAproved( studentId ).map( x => x.asignaturaId.get.toInt )
+		 	Logger.info( "aprovedSubjectsIds = "+aprovedSubjectsIds.toString )
+
+		 	val availableOfferIds = (offerIds filterNot aprovedSubjectsIds.contains)
+		 	Logger.info( "availableOfferIds ="+availableOfferIds.toString )
+
+		 	val suggestedSubjects = availableOfferIds.filter( x => checkDependencies( studentId, x ) ).
+		 		map( x => Asignatura.findById( x ).get )
+
+		 return suggestedSubjects
+
+	}
+
+	def getOfferByFail( studentId: Int ) = Action {
+		 implicit request =>
+		 	//val lapse = Date.month()
+		 	//val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
+
+		 	var suggest = List[Asignatura]()
+
+		 	val cam = Kardex.calculateCAM( studentId )
+		 	Logger.info( cam.toString )
+
+		 	val failedSubjects = Kardex.getAllNotAproved( studentId ).groupBy( x => x.asignaturaId.get.toInt )
+		 	Logger.info( failedSubjects.size.toString )
+
+		 	if( failedSubjects.keySet.size <= cam ){
+		 		failedSubjects.keySet.foreach( x => {
+		 				val asignatura = Asignatura.findById(x).get
+		 				suggest = suggest:+asignatura
+		 			} )
+
+		 		//llenar con las asignaturas restantes
+		 		val offerSubjects = getAvailableSubjects( studentId )
+		 		Logger.info( (cam-suggest.size).toString )
+		 		
+		 		for( i <- 0 to (cam-suggest.size-1) ){
+		 			suggest = suggest:+offerSubjects(i)
+		 		}
+
+		 	}else{
+		 		//aplicar prioridad de tiempos
+		 	}
+
+
+
+		 	
+
+		 	Ok( suggest.toString )
 
 	}
 

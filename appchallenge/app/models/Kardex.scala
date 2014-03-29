@@ -9,30 +9,45 @@ import anorm._
 import anorm.SqlParser._
 
 import scala.language.postfixOps
+import play.api.Logger
 
-case class Kardex(
 
-  alumnoId: Pk[Long] = NotAssigned,
-  asignaturaId: Pk[Long] = NotAssigned,
-  periodo: Pk[Date] = NotAssigned,
-  situacion: Int,
-  tipo: Int
-  
-)
+case class IA( x: Int, y: Int ){
+  def calculate():Int = {
+    val rude = x + (0.5*y)
 
-object Kardex {
+    if( rude%1.0 >= 0.5 ){
+      return math.ceil(rude).toInt
+      }else{
+        return math.floor(rude).toInt
+      }
+
+    }
+  }
+
+  case class Kardex(
+
+    alumnoId: Pk[Long] = NotAssigned,
+    asignaturaId: Pk[Long] = NotAssigned,
+    periodo: Pk[Date] = NotAssigned,
+    situacion: Int,
+    tipo: Int
+
+    )
+
+  object Kardex {
 
   /**
    * Parse an Event from a ResultSet
    */
-  val kardex= {
-      get[Pk[Long]]("kardex.alumnoId") ~
-      get[Pk[Long]]("kardex.asignaturaId") ~
-      get[Pk[Date]]("kardex.periodo") ~
-      get[Int]("kardex.situacion") ~
-      get[Int]("kardex.tipo") map {
-        case alumnoId ~ asignaturaId ~ periodo ~ situacion ~ tipo => Kardex(alumnoId, asignaturaId, periodo, situacion, tipo)
-      }
+   val kardex= {
+    get[Pk[Long]]("kardex.alumnoId") ~
+    get[Pk[Long]]("kardex.asignaturaId") ~
+    get[Pk[Date]]("kardex.periodo") ~
+    get[Int]("kardex.situacion") ~
+    get[Int]("kardex.tipo") map {
+      case alumnoId ~ asignaturaId ~ periodo ~ situacion ~ tipo => Kardex(alumnoId, asignaturaId, periodo, situacion, tipo)
+    }
   }
 
   /**
@@ -72,24 +87,70 @@ object Kardex {
 
 
   def getAllAproved( studentId: Int ): List[Kardex] = {
-     DB.withConnection { implicit connection =>
-      SQL("select * from kardex where alumnoId = {studentId} and situacion = '1'").on(
-        'studentId -> studentId        
-        ).as( kardex *)
-    }
+   DB.withConnection { implicit connection =>
+    SQL("select * from kardex where alumnoId = {studentId} and situacion = '1'").on(
+      'studentId -> studentId        
+      ).as( kardex *)
+  }
+}
+
+def getAllNotAproved( studentId: Int ): List[Kardex] = {
+  val failed = DB.withConnection { implicit connection =>
+  SQL("select * from kardex where alumnoId = {studentId} and situacion = '0'").on(
+    'studentId -> studentId        
+    ).as( kardex *)
   }
 
+  val passed = getAllAproved( studentId ).map( x  => x.asignaturaId.get.toInt )
+  val failedIds = failed.map( x  => x.asignaturaId.get.toInt )
 
-  def findByStudentId( studentId: Int ): List[Kardex] = {
-       DB.withConnection { implicit connection =>
-      SQL("select * from kardex where alumnoId = {studentId}").on(
-        'studentId -> studentId        
-        ).as( kardex *)
-    }
+  val allNeverAprovedIds = (failedIds filterNot passed.contains)
+
+  val allNeverAproved = failed.filter( x => allNeverAprovedIds.contains( x.asignaturaId.get.toInt ) )
+
+  return allNeverAproved
+}
 
 
+def findByStudentId( studentId: Int ): List[Kardex] = {
+ DB.withConnection { implicit connection =>
+  SQL("select * from kardex where alumnoId = {studentId}").on(
+    'studentId -> studentId        
+    ).as( kardex *)
+}
+}
+
+def calculateCAM( studentId: Int ):Int = {
+  val kardex = findByStudentId( studentId )
+    //Logger.info( kardex.toString )
 
 
+  val kardexByGroup = kardex.groupBy( x => x.periodo.toString )
+  //Logger.info( kardexByGroup.toString )
+
+  val calculateIAperGroup = kardexByGroup.map( x => {
+    val subjects = x._2
+    Logger.info( "subjects "+subjects.toString )
+    val passed = subjects.filter( subject => (subject.tipo == 1 && subject.situacion == 1) ).size
+    val failed  = subjects.filter( subject => (subject.tipo == 0 && subject.situacion == 1) ).size
+    IA( passed, failed )
   }
+    )
+  //Logger.info( "IAPergrpuo = "+calculateIAperGroup.toString )
+
+  val iaPerPeriod = calculateIAperGroup.map( x=> x.calculate )
+  //Logger.info( "iaPerPeriod = "+iaPerPeriod.toString )
+
+
+  
+  
+
+
+  
+  val cam = iaPerPeriod.max
+  Logger.info( "max = "+cam )
+  return cam
+
+}
 
 }

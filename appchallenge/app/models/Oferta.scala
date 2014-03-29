@@ -10,6 +10,7 @@ import anorm._
 import anorm.SqlParser._
 
 import scala.language.postfixOps
+import play.api.Logger
 
 case class Oferta(
 
@@ -20,23 +21,23 @@ case class Oferta(
   horaInicial: String,
   horaFinal: String
 
-)
-  
+  )
+
 
 object Oferta {
 
   /**
    * Parse an Event from a ResultSet
    */
-  val oferta = {
-      get[Pk[Long]]("oferta.idAsignatura") ~
-      get[Pk[Long]]("oferta.idProfesor") ~
-      get[Pk[Date]]("oferta.periodo") ~
-      get[Int]("oferta.dia") ~
-      get[String]("oferta.horaInicial") ~
-      get[String]("oferta.horaFinal") map {
-        case idAsignatura ~ idProfesor ~ periodo ~ dia ~ horaInicial ~ horaFinal  => Oferta(idAsignatura, idProfesor, periodo, dia, horaInicial, horaFinal)
-      }
+   val oferta = {
+    get[Pk[Long]]("oferta.idAsignatura") ~
+    get[Pk[Long]]("oferta.idProfesor") ~
+    get[Pk[Date]]("oferta.periodo") ~
+    get[Int]("oferta.dia") ~
+    get[String]("oferta.horaInicial") ~
+    get[String]("oferta.horaFinal") map {
+      case idAsignatura ~ idProfesor ~ periodo ~ dia ~ horaInicial ~ horaFinal  => Oferta(idAsignatura, idProfesor, periodo, dia, horaInicial, horaFinal)
+    }
   }
 
   /**
@@ -47,8 +48,20 @@ object Oferta {
   }
 
   def allInLapse( lapse  :String ): List[Oferta] = DB.withConnection {
-     implicit c => SQL("select * from oferta where periodo = {lapse}").on( 'lapse -> lapse ).as(oferta *)
-  }
+   implicit c => SQL("select * from oferta where periodo = {lapse}").on( 'lapse -> lapse ).as(oferta *)
+ }
+
+ def allGroupByTeacher(  ): List[Oferta] = {
+
+      val data  = DB.withConnection {
+
+       implicit c => SQL("select * from oferta").as(oferta *)
+     }
+
+     Logger.info( data.toString )
+
+     return data.groupBy( x => (x.idProfesor.get.toInt, x.idAsignatura.get.toInt) ).map( x => x._2(0) ).to[List]
+}
 
   /**
   * Retrieve a event from the id.
