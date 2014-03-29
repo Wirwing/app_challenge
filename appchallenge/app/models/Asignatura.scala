@@ -15,6 +15,7 @@ case class Asignatura(
   id: Pk[Long] = NotAssigned,
   name: String,
   credits: Int
+  
 )
   
 
