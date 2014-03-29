@@ -60,10 +60,32 @@ object Kardex {
       SQL("select * from kardex where alumnoId = {alumnoId} and asignaturaId = {asignaturaId} and situacion = 1").on(
         'alumnoId -> alumnoId,
         'asignaturaId -> asignaturaId
-        ).as(Kardex.kardex.singleOpt)
+        ).as( kardex * )
     }
 
     ! aprovedDependencies.isEmpty
+  }
+
+
+  def getAllAproved( studentId: Int ): List[Kardex] = {
+     DB.withConnection { implicit connection =>
+      SQL("select * from kardex where alumnoId = {studentId} and situacion = 1").on(
+        'studentId -> studentId        
+        ).as( kardex *)
+    }
+  }
+
+
+  def findByStudentId( studentId: Int ): List[Kardex] = {
+       DB.withConnection { implicit connection =>
+      SQL("select * from kardex where alumnoId = {studentId}").on(
+        'studentId -> studentId        
+        ).as( kardex *)
+    }
+
+
+
+
   }
 
 }

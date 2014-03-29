@@ -17,12 +17,43 @@ object AsignaturasController extends Controller{
 
 	def checkSatisfiedDependencies( alumnoId: Int, asignaturaId: Int ) = Action{
 		implicit request =>
-			val dependencies = Dependencia.findById( asignaturaId )
-			val isAproved = Kardex.isAproved( alumnoId, dependencies )
+			
+			val isAproved = checkDependencies( alumnoId, asignaturaId )
 
 			Logger.info( "is aproved = "+isAproved )
 
 		Ok( "isAproved = "+isAproved )
+
+	}
+
+
+	def checkDependencies( alumnoId: Int, asignaturaId: Int ):Boolean={
+		val dependencies = Dependencia.findById( asignaturaId )
+		if( dependencies.isEmpty ){
+			return true
+		}else{
+			val isAproved = Kardex.isAproved( alumnoId, dependencies )	
+			return isAproved
+		}
+	}
+
+
+
+	def getOfferByAproved( studentId: Int ) = Action {
+		 implicit request =>
+		 	val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
+		 	val aprovedSubjectsIds = Kardex.getAllAproved( studentId ).map( x => x.asignaturaId.get.toInt )
+
+		 	val availableOfferIds = offerIds filterNot aprovedSubjectsIds.contains
+		 	Logger.info( availableOfferIds.toString )
+
+		 	val suggestedSubjects = availableOfferIds.filter( x => checkDependencies( studentId, x ) ).
+		 		map( x => Asignatura.findById( x ).get.name )
+
+
+		 	Logger.info( suggestedSubjects.toString )
+
+		 	Ok( suggestedSubjects.toString )
 
 	}
 
