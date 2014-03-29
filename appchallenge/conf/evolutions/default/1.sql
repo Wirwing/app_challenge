@@ -33,12 +33,16 @@ create table oferta(
 	idAsignatura integer not null,
 	idProfesor integer not null,
 	periodo date not null,
+  dia integer not null,
+  horaInicial datetime not null,
+  horaFinal datetime not null,
 	constraint pk_oferta primary key ( idAsignatura, idProfesor, periodo), 
 	constraint fk_oferta_1 foreign key (idAsignatura) references asignatura(id) on delete cascade
 	
 );
 
 create table planasignatura(
+
 	idAsignatura integer not null,
 	idPlan integer not null,
 
@@ -48,7 +52,30 @@ create table planasignatura(
 	
 );
 
+create table kardex(
 
+  alumnoId integer not null,
+  asignaturaId integer not null,
+  periodo date not null,
+  situacion integer not null,
+  tipo integer not null,
+
+  constraint pk_kardex primary key ( alumnoId, asignaturaId, periodo), 
+  constraint fk_kardex_1 foreign key (alumnoId) references alumno(id) on delete cascade,
+  constraint fk_kardex_2 foreign key (asignaturaId) references asignatura(id) on delete cascade
+  
+);
+
+create table dependencia(
+
+  asignaturaId integer not null,
+  requisitoId integer not null,
+
+  constraint pk_dependencia primary key ( asignaturaId, requisitoId), 
+  constraint fk_dependencia_1 foreign key (asignaturaId) references asignatura(id) on delete cascade,
+  constraint fk_dependencia_2 foreign key (requisitoId) references asignatura(id) on delete cascade
+  
+);
 
 
 # --- !Downs

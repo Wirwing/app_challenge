@@ -1,6 +1,7 @@
 package models;
 
 import java.util.Date;
+import org.joda.time._
 
 import play.api.db._
 import play.api.Play.current
@@ -14,7 +15,10 @@ case class Oferta(
 
   idAsignatura: Pk[Long] = NotAssigned,
   idProfesor: Pk[Long]  = NotAssigned,
-  periodo: Pk[Date] = NotAssigned
+  periodo: Pk[Date] = NotAssigned,
+  dia: Int,
+  horaInicial: DateTime,
+  horaFinal: DateTime
 
 )
   
@@ -27,8 +31,11 @@ object Oferta {
   val oferta = {
       get[Pk[Long]]("oferta.idAsignatura") ~
       get[Pk[Long]]("oferta.idProfesor") ~
-      get[Pk[Date]]("oferta.periodo") map {
-        case idAsignatura ~ idProfesor ~ periodo  => Oferta(idAsignatura, idProfesor, periodo)
+      get[Pk[Date]]("oferta.periodo") ~
+      get[Int]("oferta.dia") ~
+      get[DateTime]("oferta.horaInicial") ~
+      get[DateTime]("oferta.horaFinal") map {
+        case idAsignatura ~ idProfesor ~ periodo ~ dia ~ horaInicial ~ horaFinal  => Oferta(idAsignatura, idProfesor, periodo, dia, horaInicial, horaFinal)
       }
   }
 
