@@ -122,12 +122,20 @@ object AsignaturasController extends Controller{
 		 				suggest = suggest:+asignatura
 		 			} )
 
+		 		Logger.info( "suggest="+suggest.toString )
 		 		//llenar con las asignaturas restantes
-		 		val offerSubjects = getAvailableSubjects( studentId )
+		 		val offerSubjects = getAvailableSubjects( studentId ).groupBy( x => x.id.get )
+		 		val keySet = offerSubjects.keySet.to[List]
+		 		Logger.info( "getAvailableSubjects="+offerSubjects.toString )
 		 		Logger.info( (cam-suggest.size).toString )
+
+		 		var limit = cam-suggest.size-1
+		 		if( keySet.size < limit ){
+		 			limit = keySet.size-1
+		 		}
 		 		
-		 		for( i <- 0 to (cam-suggest.size-1) ){
-		 			suggest = suggest:+offerSubjects(i)
+		 		for( i <- 0 to limit ){
+		 			suggest = suggest:+offerSubjects(keySet(i))(0)
 		 			//texto += suggest(i).toString+" ,"
 		 		}
 

@@ -107,11 +107,14 @@ case class IA( x: Int, y: Int ){
 
 
   def getAllAproved( studentId: Int ): List[Kardex] = {
-   DB.withConnection { implicit connection =>
+   val data = DB.withConnection { implicit connection =>
     SQL("select * from kardex where alumnoId = {studentId} and situacion = '1' order by periodo desc").on(
       'studentId -> studentId        
       ).as( kardex *)
   }
+
+  //Logger.info( "all aproved="+data.toString )
+  data
 }
 
 def getAllNotAproved( studentId: Int ): List[Kardex] = {
