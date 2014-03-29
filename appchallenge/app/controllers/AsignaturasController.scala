@@ -41,7 +41,8 @@ object AsignaturasController extends Controller{
 
 	def getOfferByAproved( studentId: Int ) = Action {
 		 implicit request =>
-		 	//val lapse = 
+		 	//val lapse = Date.month()
+		 	//val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
 
 		 	val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
 		 	Logger.info( "offerIds = "+Oferta.all().toString )
