@@ -7,6 +7,8 @@ import play.api.data.Forms._
 import play.api.data.validation.Constraints._
 import scala.collection.breakOut
 import models._
+import com.github.nscala_time.time.Imports._
+
 
 import views._
 import anorm._
@@ -16,9 +18,12 @@ import play.api.Logger
 object AsignaturasController extends Controller{
 
 
-	def test( alumnoId:Int ) = Action{
+	def test( studentId:Int ) = Action{
 
-		Logger.info("not aproved list = "+Kardex.getAllNotAproved( alumnoId ).toString)
+		val failedSubjects = Kardex.getAllNotAproved( studentId )
+		Logger.info( failedSubjects.toString )
+
+//		failedSubjects.foreach( x => Logger.info( x.getDistanceFromDeadLine().toString ) )
 
 
 		Ok("Done")
@@ -96,6 +101,8 @@ object AsignaturasController extends Controller{
 		 	//val lapse = Date.month()
 		 	//val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
 
+		 	 val month = LocalDateTime.now.month
+
 		 	var suggest = List[Asignatura]()
 
 		 	val cam = Kardex.calculateCAM( studentId )
@@ -125,12 +132,10 @@ object AsignaturasController extends Controller{
 		 		}
 
 
-
-		 	}else{
 		 		
 		 	}
 
-
+		 	
 
 		 	
 
@@ -138,4 +143,45 @@ object AsignaturasController extends Controller{
 
 	}
 
+/*
+	def getOfferWithWarnings( studentId: Int ) = Action {
+		 implicit request =>
+		 	//val lapse = Date.month()
+		 	//val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
+
+		 	 val month = LocalDateTime.now.month
+
+		 	var suggest = List[Asignatura]()
+
+		 	val cam = Kardex.calculateCAM( studentId )
+		 	Logger.info( cam.toString )
+
+		 	val failedSubjects = Kardex.getAllNotAproved( studentId ).foreach( x => Logger.info( x.getDistanceFromDeadLine().toString ) )
+		 	
+		 	val	failedSubjectsIds = failedSubjects.groupBy( x => x.asignaturaId.get.toInt )
+		 	Logger.info( failedSubjectsIds.size.toString )
+
+		 	if( failedSubjects.keySet.size <= cam ){
+		 		failedSubjects.keySet.foreach( x => {
+		 				val asignatura = Asignatura.findById(x).get
+		 				suggest = suggest:+asignatura
+		 			} )
+
+		 		//llenar con las asignaturas restantes
+		 		val offerSubjects = getAvailableSubjects( studentId )
+		 		Logger.info( (cam-suggest.size).toString )
+		 		
+		 		for( i <- 0 to (cam-suggest.size-1) ){
+		 			suggest = suggest:+offerSubjects(i)
+		 		}
+		 	}
+
+		 	
+
+		 	
+
+		 	Ok( suggest.toString )
+
+	}
+	*/
 }
