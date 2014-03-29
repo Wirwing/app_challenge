@@ -17,8 +17,8 @@ case class Oferta(
   idProfesor: Pk[Long]  = NotAssigned,
   periodo: Pk[Date] = NotAssigned,
   dia: Int,
-  horaInicial: DateTime,
-  horaFinal: DateTime
+  horaInicial: String,
+  horaFinal: String
 
 )
   
@@ -33,8 +33,8 @@ object Oferta {
       get[Pk[Long]]("oferta.idProfesor") ~
       get[Pk[Date]]("oferta.periodo") ~
       get[Int]("oferta.dia") ~
-      get[DateTime]("oferta.horaInicial") ~
-      get[DateTime]("oferta.horaFinal") map {
+      get[String]("oferta.horaInicial") ~
+      get[String]("oferta.horaFinal") map {
         case idAsignatura ~ idProfesor ~ periodo ~ dia ~ horaInicial ~ horaFinal  => Oferta(idAsignatura, idProfesor, periodo, dia, horaInicial, horaFinal)
       }
   }
