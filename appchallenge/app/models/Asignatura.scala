@@ -17,7 +17,6 @@ case class Asignatura(
   credits: Int
   
 )
-  
 
 object Asignatura {
 
