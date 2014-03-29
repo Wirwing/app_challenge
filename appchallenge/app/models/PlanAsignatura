@@ -1,0 +1,50 @@
+package models;
+
+import java.util.Date;
+
+import play.api.db._
+import play.api.Play.current
+
+import anorm._
+import anorm.SqlParser._
+
+import scala.language.postfixOps
+
+case class PlanAsignatura(
+
+  idAsignatura: Pk[Long] = NotAssigned,
+  idPlan: Pk[Long] = NotAssigned
+
+)
+  
+
+object PlanAsignatura {
+
+  /**
+   * Parse an Event from a ResultSet
+   */
+  val planAsignatura = {
+    get[Pk[Long]]("plan.idAsignatura") ~
+    get[Pk[Long]]("plan.idPlan")  map {
+        case idAsignatura ~ idPlan   => Plan(idAsignatura, idPlan)
+    }
+  }
+
+  /**
+  * Retrieve all Alumnos.
+  */
+  def all(): List[Plan] = DB.withConnection {
+    implicit c => SQL("select * from planasignatura").as(planAsignatura *)
+  }
+
+  /**
+  * Retrieve a event from the id.
+  * @param id the event id
+  */
+  def findById(id: Long): Option[PlanAsignatura] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from planasignatura where id = {id}").on('id -> id).as(PlanAsignatura.planAsignatura.singleOpt)
+    }
+  }
+
+}
