@@ -6,8 +6,7 @@ libraryDependencies ++= Seq(
   jdbc,
   anorm,
   cache,
-  "joda-time" % "joda-time" % "2.1",
-  "org.joda" % "joda-convert" % "1.2"
+  "com.github.nscala-time" %% "nscala-time" % "0.8.0"
 )     
 
 play.Project.playScalaSettings

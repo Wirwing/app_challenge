@@ -39,7 +39,7 @@ create table oferta(
   dia integer not null,
   horaInicial text not null,
   horaFinal text not null,
-	constraint pk_oferta primary key ( idAsignatura, idProfesor, periodo), 
+	constraint pk_oferta primary key ( idAsignatura, idProfesor, dia, horaInicial, horaFinal), 
 	constraint fk_oferta_1 foreign key (idAsignatura) references asignatura(id) on delete cascade
 	
 );
