@@ -141,11 +141,6 @@ def calculateCAM( studentId: Int ):Int = {
   val iaPerPeriod = calculateIAperGroup.map( x=> x.calculate )
   //Logger.info( "iaPerPeriod = "+iaPerPeriod.toString )
 
-
-  
-  
-
-
   
   val cam = iaPerPeriod.max
   Logger.info( "max = "+cam )
