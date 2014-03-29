@@ -47,9 +47,9 @@ case class IA( x: Int, y: Int ){
       val month = datePeriodo.getMonthOfYear
       Logger( month.toString )
       if( month >= 8 ){
-        return datePeriodo.plusMonths(24)
+            return datePeriodo.plusMonths(24)
         }else{
-          return datePeriodo.plusMonths( 18 )
+            return datePeriodo.plusMonths( 18 )
         }
 
       }

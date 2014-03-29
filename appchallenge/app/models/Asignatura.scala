@@ -38,6 +38,8 @@ object Asignatura {
     implicit c => SQL("select * from asignatura").as(asignatura *)
   }
 
+  
+
   /**
   * Retrieve a event from the id.
   * @param id the event id
