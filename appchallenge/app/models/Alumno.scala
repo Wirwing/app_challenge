@@ -34,7 +34,7 @@ object Alumno {
   /**
   * Retrieve an alumn from his id and password.
   */
-  def findByNameAndPassword(id: Long, password: String): List[Event] = {
+  def findByNameAndPassword(id: Long, password: String): Option[Alumno] = {
     DB.withConnection { implicit connection =>
       SQL("select * from alumno where id = {alumno_id} and password = {password}").on(
         'alumno_id -> id,
