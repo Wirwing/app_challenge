@@ -55,7 +55,9 @@ case class IA( x: Int, y: Int ){
       }
 
     }
-    object Kardex {
+    
+
+object Kardex {
 
   /**
    * Parse an Event from a ResultSet
@@ -114,7 +116,7 @@ case class IA( x: Int, y: Int ){
   }
 
   //Logger.info( "all aproved="+data.toString )
-  data
+    data
 }
 
 def getAllNotAproved( studentId: Int ): List[Kardex] = {

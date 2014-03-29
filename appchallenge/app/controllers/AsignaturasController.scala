@@ -17,13 +17,17 @@ import play.api.Logger
 
 object AsignaturasController extends Controller{
 
+	val EXTRAORDINARY = 0
+	val EXTRAORDINARY_CHANCES = 3
+	val MANDATORY_SECOND_ORDINARY = "You already burned your "+EXTRAORDINARY_CHANCES.toString+" extraordinaries, TAKE THE ORDINARY"
+
 
 	def test( studentId:Int ) = Action{
 
 		val failedSubjects = Kardex.getAllNotAproved( studentId )
-		Logger.info( failedSubjects.toString )
+//		Logger.info( failedSubjects.toString )
 
-//		failedSubjects.foreach( x => Logger.info( x.getDistanceFromDeadLine().toString ) )
+		failedSubjects.foreach( x => Logger.info( "hola:"+x.alumnoId.get.toString+","+x.asignaturaId+" "+x.periodo.get+"  "+x.deadline().toString+" "+x.getDistanceFromDeadLine().toString ) )
 
 
 		Ok("Done")
@@ -150,6 +154,70 @@ object AsignaturasController extends Controller{
 		 	Ok( suggest.toString )
 
 	}
+
+
+	def getOfferWithWarnings( studentId: Int ) = Action {
+		 implicit request =>
+		 	//val lapse = Date.month()
+		 	//val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
+
+		 	
+
+		 	var suggest = List[(Asignatura, String)]()
+
+		 	val cam = Kardex.calculateCAM( studentId )
+		 	Logger.info( cam.toString )
+
+
+
+		 	val failedSubjects = Kardex.getAllNotAproved( studentId )
+		 	val failedSubjectsMap = failedSubjects.groupBy( x => x.asignaturaId.get.toInt )
+
+		 	val keysFailedSubjects = failedSubjects.map( x => x.asignaturaId.get.toInt ).distinct
+
+		 	if( keysFailedSubjects.size <= cam ){
+		 		keysFailedSubjects.foreach( x => {
+		 				val asignatura = Asignatura.findById(x).get
+		 				val extraordinariesBurned = failedSubjectsMap( x ).filter( subject => subject.tipo == EXTRAORDINARY )
+		 				val daysToDoomsday = failedSubjectsMap( x ).map( subject => subject.getDistanceFromDeadLine() ).min
+
+		 				var message = ""
+		 				if (extraordinariesBurned.size == EXTRAORDINARY_CHANCES){
+		 					message = MANDATORY_SECOND_ORDINARY
+		 				}
+
+		 				suggest = suggest:+(asignatura, "doomsday in"+daysToDoomsday.toString+" days take extraordinary now."+message)
+		 			} )
+
+		 		Logger.info( "suggest="+suggest.toString )
+		 		//llenar con las asignaturas restantes
+		 		val offerSubjects = getAvailableSubjects( studentId ).groupBy( x => x.id.get )
+		 		val keySet = offerSubjects.keySet.to[List]
+		 		Logger.info( "getAvailableSubjects="+offerSubjects.toString )
+		 		Logger.info( (cam-suggest.size).toString )
+
+		 		var limit = cam-suggest.size-1
+		 		if( keySet.size < limit ){
+		 			limit = keySet.size-1
+		 		}
+		 		
+		 		for( i <- 0 to limit ){
+		 			suggest = suggest:+(offerSubjects(keySet(i))(0), "OK no problem")
+		 			//texto += suggest(i).toString+" ,"
+		 		}
+
+
+		 		
+		 	}
+
+		 	
+
+		 	
+
+		 	Ok( suggest.toString )
+
+	}
+
 
 /*
 	def getOfferWithWarnings( studentId: Int ) = Action {
