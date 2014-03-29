@@ -15,6 +15,7 @@ case class Asignatura(
   id: Pk[Long] = NotAssigned,
   name: String,
   credits: Int
+  
 )
   
 
@@ -35,7 +36,7 @@ object Asignatura {
   * Retrieve all Alumnos.
   */
   def all(): List[Asignatura] = DB.withConnection {
-    implicit c => SQL("select * from Aaignatura").as(asignatura *)
+    implicit c => SQL("select * from asignatura").as(asignatura *)
   }
 
   /**
