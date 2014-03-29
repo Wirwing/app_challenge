@@ -3,10 +3,11 @@
 # ~~~~
 
 # Home page
-GET     /                           			controllers.Application.index
-GET 	/isAproved/:idAlumno/:idAsignatura		controllers.AsignaturasController.checkSatisfiedDependencies( idAlumno:Int, idAsignatura:Int )
-POST    /user/login                     		controllers.Application.login
-POST    /suggest                    			controllers.RestDebuggerController.suggest
+GET     /                           controllers.Application.index
+POST    /                           controllers.Application.next
+GET 	/isAproved/:idAlumno/:idAsignatura	controllers.AsignaturasController.checkSatisfiedDependencies( idAlumno:Int, idAsignatura:Int )
+POST    /user/login                     controllers.Application.login
+POST    /suggest                    controllers.RestDebuggerController.suggest
 
 GET		/getOfferByAproved/:idAlumno			controllers.AsignaturasController.getOfferByAproved( idAlumno:Int )
 GET		/getOfferByFail/:idAlumno				controllers.AsignaturasController.getOfferByFail( idAlumno:Int )
