@@ -42,10 +42,13 @@ object AsignaturasController extends Controller{
 	def getOfferByAproved( studentId: Int ) = Action {
 		 implicit request =>
 		 	val offerIds = Oferta.all().map( x => x.idAsignatura.get.toInt )
+		 	Logger.info( "offerIds = "+Oferta.all().toString )
+
 		 	val aprovedSubjectsIds = Kardex.getAllAproved( studentId ).map( x => x.asignaturaId.get.toInt )
+		 	Logger.info( "aprovedSubjectsIds = "+aprovedSubjectsIds.toString )
 
 		 	val availableOfferIds = offerIds filterNot aprovedSubjectsIds.contains
-		 	Logger.info( availableOfferIds.toString )
+		 	Logger.info( "availableOfferIds ="+availableOfferIds.toString )
 
 		 	val suggestedSubjects = availableOfferIds.filter( x => checkDependencies( studentId, x ) ).
 		 		map( x => Asignatura.findById( x ).get.name )

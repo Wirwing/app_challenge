@@ -1,8 +1,8 @@
 # --- First database schema
 
 # --- !Ups
-# situacion penultimo = 1 aprobada, 0 reprobada
-# tipo ultimo  = 0 extra 1 ordinario
+
+
 
 insert into kardex values( 1, 1, '2012-08-01', 0, 1 );
 insert into kardex values( 1, 2, '2012-08-01', 0, 1 );
