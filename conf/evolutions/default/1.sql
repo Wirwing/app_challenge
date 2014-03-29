@@ -4,7 +4,7 @@
 
 create table alumno(
 
-	id integer not null AUTO_INCREMENT,
+	id integer not null,
 	name text not null,
 	password text not null,
 	primary key( id ) 
@@ -13,7 +13,7 @@ create table alumno(
 
 create table plan(
 
-	id integer not null AUTO_INCREMENT,
+	id integer not null,
 	name text not null,
 	primary key( id )
 
@@ -22,7 +22,7 @@ create table plan(
 
 create table asignatura(
 
-	id integer not null AUTO_INCREMENT,
+	id integer not null,
 	name text not null,
 	credits integer not null,
 	primary key( id ) 
