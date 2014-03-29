@@ -96,7 +96,7 @@ case class IA( x: Int, y: Int ){
 
 def getAllNotAproved( studentId: Int ): List[Kardex] = {
   val failed = DB.withConnection { implicit connection =>
-  SQL("select * from kardex where alumnoId = {studentId} and situacion = '0'").on(
+  SQL("select * from kardex where alumnoId = {studentId} and situacion = '0' order by periodo desc").on(
     'studentId -> studentId        
     ).as( kardex *)
   }
