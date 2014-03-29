@@ -67,15 +67,25 @@ object Oferta {
   * Retrieve a event from the id.
   * @param id the event id
   */
-  def findById(id: Long): Option[Oferta] = {
+  def findById(idAsignatura: Long): Option[Oferta] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from oferta where id = {id}").on('id -> id).as(Oferta.oferta.singleOpt)
+      SQL("select * from oferta where idAsignatura = {idAsignatura}").on('idAsignatura -> idAsignatura).as(Oferta.oferta.singleOpt)
     }
   }
 
-  def findByIdAnd(id: Long): Option[Oferta] = {
+/**
+  * Retrieve a event from the id.
+  * @param id the event id
+  */
+  def allWithAsignatureId(idAsignatura: Long): List[Oferta] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from oferta where id = {id}").on('id -> id).as(Oferta.oferta.singleOpt)
+      SQL("select * from oferta where idAsignatura = {idAsignatura}").on('idAsignatura -> idAsignatura).as(oferta *)
+    }
+  }
+
+  def findByIdAnd(idAsignatura: Long): Option[Oferta] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from oferta where idAsignatura = {idAsignatura}").on('idAsignatura -> idAsignatura).as(Oferta.oferta.singleOpt)
     }
   }
 

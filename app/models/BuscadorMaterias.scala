@@ -186,7 +186,7 @@ object BuscadorMaterias {
 		 					message = MANDATORY_SECOND_ORDINARY
 		 				}
 
-		 				suggest = suggest:+(asignatura, "doomsday in"+daysToDoomsday.toString+" days take extraordinary now."+message)
+		 				suggest = suggest:+(asignatura, "doomsday in "+daysToDoomsday.toString+" days take extraordinary now."+message)
 		 			} )
 
 		 		Logger.info( "suggest="+suggest.toString )
@@ -202,7 +202,7 @@ object BuscadorMaterias {
 		 		}
 		 		
 		 		for( i <- 0 to limit ){
-		 			suggest = suggest:+(offerSubjects(keySet(i))(0), "Ok no problem")
+		 			suggest = suggest:+(offerSubjects(keySet(i))(0), "Ok no problemo")
 		 			//texto += suggest(i).toString+" ,"
 		 		}
 

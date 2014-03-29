@@ -1,6 +1,7 @@
 package controllers
 
 import models._
+import helpers._
 import views._
 import play.api._
 import play.api.mvc._
@@ -23,12 +24,6 @@ object Application extends Controller {
     mapping(
       "initialHour" -> text,
       "finalHour" -> text)(SuggestForm.apply)(SuggestForm.unapply))
-
-  def decodeBasicAuth(auth: String) = {
-    val baStr = auth.replaceFirst("Basic ", "")
-    var Array(user, pass) = new String(new sun.misc.BASE64Decoder().decodeBuffer(baStr), "UTF-8").split(":")
-    (user, pass)
-  }
 
   def index = Action { implicit request =>
     Ok(views.html.suggestEntry(suggestForm))
@@ -92,7 +87,7 @@ object Application extends Controller {
 
       request.headers.get("Authorization").map{ basicAuth =>
 
-        val (name, pass) = decodeBasicAuth(basicAuth)
+        val (name, pass) = AuthHelper.decodeBasicAuth(basicAuth)
 
         Logger.debug(s"Searching for $name with $pass")
 
