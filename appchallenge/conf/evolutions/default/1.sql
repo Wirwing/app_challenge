@@ -3,23 +3,25 @@
 # --- !Ups
 
 create table alumno(
+
 	id integer not null AUTO_INCREMENT,
 	name text not null,
 	password text not null,
-
 	primary key( id ) 
 
 );
 
 create table plan(
+
 	id integer not null AUTO_INCREMENT,
 	name text not null,
-	primary key( id ) 
+	primary key( id )
 
 );
 
 
 create table asignatura(
+
 	id integer not null AUTO_INCREMENT,
 	name text not null,
 	credits integer not null,
@@ -30,6 +32,7 @@ create table asignatura(
 
 
 create table oferta(
+
 	idAsignatura integer not null,
 	idProfesor integer not null,
 	periodo date not null,
