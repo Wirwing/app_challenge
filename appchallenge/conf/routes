@@ -5,8 +5,8 @@
 # Home page
 GET     /                           controllers.Application.index
 GET 	/isAproved/:idAlumno/:idAsignatura	controllers.AsignaturasController.checkSatisfiedDependencies( idAlumno:Int, idAsignatura:Int )
-POST    /delete                     controllers.Application.delete
 POST    /user/login                     controllers.Application.login
+POST    /suggest                    controllers.RestDebuggerController.suggest
 
 GET		/getOfferByAproved/:idAlumno	controllers.AsignaturasController.getOfferByAproved( idAlumno:Int )
 
