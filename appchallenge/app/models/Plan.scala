@@ -14,6 +14,7 @@ case class Plan(
 
   id: Pk[Long] = NotAssigned,
   name: String
+  
 )
   
 
