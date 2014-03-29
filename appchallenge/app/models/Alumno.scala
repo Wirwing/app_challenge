@@ -15,7 +15,7 @@ case class Alumno(
   id: Pk[Long] = NotAssigned,
   name: String,
   password: String,
-  planId: Pk[Long] = NotAssigned,
+  planId: Pk[Long] = NotAssigned
   
 )
 
@@ -28,7 +28,7 @@ object Alumno {
     get[Pk[Long]]("alumno.id") ~
       get[String]("alumno.name") ~
       get[String]("alumno.password")~
-      get[Pk[Long]("alumno.planId")] map {
+      get[Pk[Long]]("alumno.planId") map {
         case id ~ name ~ password ~ planId => Alumno(id, name, password, planId)
       }
   }

@@ -25,12 +25,13 @@ object Kardex {
   /**
    * Parse an Event from a ResultSet
    */
-  val Kardex = {
-      get[Pk[Long]]("kardex.id") ~
-      get[String]("kardex.name") ~
-      get[Int]("kardex.credits") 
-      map {
-        case id ~ name ~ credits  => Kardex(id, name, credits)
+  val kardex= {
+      get[Pk[Long]]("kardex.alumnoId") ~
+      get[Pk[Long]]("kardex.asignaturaId") ~
+      get[Pk[Date]]("kardex.periodo") ~
+      get[Int]("kardex.situacion") ~
+      get[Int]("kardex.tipo") map {
+        case alumnoId ~ asignaturaId ~ periodo ~ situacion ~ tipo => Kardex(alumnoId, asignaturaId, periodo, situacion, tipo)
       }
   }
 
@@ -38,16 +39,19 @@ object Kardex {
   * Retrieve all Alumnos.
   */
   def all(): List[Kardex] = DB.withConnection {
-    implicit c => SQL("select * from Aaignatura").as(kardex *)
+    implicit c => SQL("select * from kardex").as(kardex *)
   }
 
   /**
   * Retrieve a event from the id.
   * @param id the event id
   */
-  def findById(id: Long): Option[Kardex] = {
+  def findById(alumnoId: Long, asignaturaId: Long): Option[Kardex] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from kardex where id = {id}").on('id -> id).as(kardex.asignatura.singleOpt)
+      SQL("select * from kardex where alumnoId = {alumnoId} and asignaturaId = {asignaturaId}").on(
+        'alumnoId -> alumnoId,
+        'asignaturaId -> asignaturaId
+        ).as(Kardex.kardex.singleOpt)
     }
   }
 
