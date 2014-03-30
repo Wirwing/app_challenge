@@ -7,6 +7,8 @@ import play.api.Play.current
 
 import anorm._
 import anorm.SqlParser._
+import com.github.nscala_time.time.Imports._
+import org.joda.time.Days
 
 import scala.language.postfixOps
 import play.api.Logger
@@ -33,9 +35,27 @@ case class IA( x: Int, y: Int ){
     situacion: Int,
     tipo: Int
 
-    )
+    ){
 
-  object Kardex {
+    def getDistanceFromDeadLine(  ): Long = {
+      val date = deadline()
+      return Days.daysBetween( LocalDate.now, date ).getDays
+    }
+
+    def deadline(  ):LocalDate = {
+      val datePeriodo = LocalDate.fromDateFields( periodo.get )
+      val month = datePeriodo.getMonthOfYear
+      Logger( month.toString )
+      if( month >= 8 ){
+        return datePeriodo.plusMonths(24)
+        }else{
+          return datePeriodo.plusMonths( 18 )
+        }
+
+      }
+
+    }
+    object Kardex {
 
   /**
    * Parse an Event from a ResultSet
@@ -96,9 +116,9 @@ case class IA( x: Int, y: Int ){
 
 def getAllNotAproved( studentId: Int ): List[Kardex] = {
   val failed = DB.withConnection { implicit connection =>
-  SQL("select * from kardex where alumnoId = {studentId} and situacion = '0' order by periodo desc").on(
-    'studentId -> studentId        
-    ).as( kardex *)
+    SQL("select * from kardex where alumnoId = {studentId} and situacion = '0' order by periodo desc").on(
+      'studentId -> studentId        
+      ).as( kardex *)
   }
 
   val passed = getAllAproved( studentId ).map( x  => x.asignaturaId.get.toInt )
@@ -110,6 +130,8 @@ def getAllNotAproved( studentId: Int ): List[Kardex] = {
 
   return allNeverAproved
 }
+
+
 
 
 def findByStudentId( studentId: Int ): List[Kardex] = {
@@ -125,7 +147,7 @@ def calculateCAM( studentId: Int ):Int = {
     //Logger.info( kardex.toString )
 
 
-  val kardexByGroup = kardex.groupBy( x => x.periodo.toString )
+    val kardexByGroup = kardex.groupBy( x => x.periodo.toString )
   //Logger.info( kardexByGroup.toString )
 
   val calculateIAperGroup = kardexByGroup.map( x => {
@@ -135,7 +157,7 @@ def calculateCAM( studentId: Int ):Int = {
     val failed  = subjects.filter( subject => (subject.tipo == 0 && subject.situacion == 1) ).size
     IA( passed, failed )
   }
-    )
+  )
   //Logger.info( "IAPergrpuo = "+calculateIAperGroup.toString )
 
   val iaPerPeriod = calculateIAperGroup.map( x=> x.calculate )

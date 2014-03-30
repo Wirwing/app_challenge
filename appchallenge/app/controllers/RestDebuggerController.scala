@@ -13,7 +13,7 @@ import anorm._
 
 import play.api.Logger
 
-object AsignaturasController extends Controller{
+object AsignaturasRestController extends Controller{
 
   def checkSatisfiedDependencies( alumnoId: Int, asignaturaId: Int ) = Action{
     implicit request =>
